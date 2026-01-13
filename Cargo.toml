@@ -39,3 +39,7 @@ test-timeout = 300
 [[test]] #simplifying for single test 
 name = "should_panic"
 harness = false
+
+[[test]]
+name = "stack_overflow"
+harness = false
