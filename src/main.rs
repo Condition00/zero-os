@@ -9,22 +9,17 @@ use zero::println;
 
 #[unsafe(no_mangle)]
 pub extern "C" fn _start() -> ! {
-    println!("Hello World{}", "!");
-
     //invoking a breakpoint function
     zero::init();
     //x86_64::instructions::interrupts::int3();
-    fn stack_overflow() {
-        stack_overflow();
-    }
-
-    stack_overflow();
 
     #[cfg(test)]
     test_main();
-
     println!("It did not crash");
-    loop {}
+    loop {
+        use zero::print;
+        print!("-")
+    }
 }
 
 // This function is called on panic.
