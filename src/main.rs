@@ -13,14 +13,15 @@ pub extern "C" fn _start() -> ! {
 
     //invoking a breakpoint function
     zero::init();
-    x86_64::instructions::interrupts::int3();
+    //x86_64::instructions::interrupts::int3();
+    fn stack_overflow() {
+        stack_overflow();
+    }
+
+    stack_overflow();
 
     #[cfg(test)]
     test_main();
-    //trigering the page fault to check
-    unsafe {
-        *(0xdeadbeef as *mut u8) = 67;
-    };
 
     println!("It did not crash");
     loop {}
