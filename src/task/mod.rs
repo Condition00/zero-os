@@ -8,7 +8,6 @@ use core::{
 
 pub mod executor;
 pub mod keyboard;
-pub mod simple_executor;
 
 pub struct Task {
     id: TaskId,
@@ -37,4 +36,3 @@ impl TaskId {
         TaskId(NEXT_ID.fetch_add(1, Ordering::Relaxed))
     }
 }
-
