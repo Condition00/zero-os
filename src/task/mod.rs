@@ -8,6 +8,7 @@ use core::{
 
 pub mod executor;
 pub mod keyboard;
+pub mod yield_now;
 
 pub struct Task {
     id: TaskId,
@@ -35,4 +36,9 @@ impl TaskId {
         static NEXT_ID: AtomicU64 = AtomicU64::new(0);
         TaskId(NEXT_ID.fetch_add(1, Ordering::Relaxed))
     }
+}
+
+//helper for yield_now
+pub fn yield_now() -> yield_now::YieldNow {
+    yield_now::YieldNow::new()
 }
