@@ -1,4 +1,4 @@
-use crate::{input, print, println, terminal};
+use crate::{input, println, terminal};
 use conquer_once::spin::OnceCell;
 use core::{
     pin::Pin,
