@@ -18,7 +18,9 @@ fn kernel_main(_boot_info: &'static BootInfo) -> ! {
     use zero::memory;
     use zero::memory::BootInfoFrameAllocator;
 
-    println!("ZERO OS");
+    use zero::{input, terminal};
+
+    println!("ZERO OS\n");
     zero::init();
 
     let phys_mem_offset = VirtAddr::new(_boot_info.physical_memory_offset);
@@ -32,6 +34,16 @@ fn kernel_main(_boot_info: &'static BootInfo) -> ! {
 
     let mut executor = Executor::new();
     executor.spawn(Task::new(keyboard::print_keypresses()));
+    executor.spawn(Task::new(async {
+        loop {
+            terminal::write("zero-os> ");
+            terminal::mark_input_start();
+            let line = input::read_line().await;
+            terminal::write("You typed: ");
+            terminal::write(&line);
+            terminal::write("\n");
+        }
+    }));
     executor.run();
 }
 

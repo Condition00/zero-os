@@ -8,10 +8,14 @@ pub fn push_char(c: char) {
 
     match c {
         '\n' => buf.push('\n'),
-        '\x08' => {
-            // backspace
-            buf.pop();
+
+        '\x08' | '\x7f' => {
+            if crate::terminal::can_backspace() {
+                buf.pop();
+                crate::terminal::backspace();
+            }
         }
+
         _ => buf.push(c),
     }
 }
