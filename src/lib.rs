@@ -9,6 +9,7 @@ use core::panic::PanicInfo;
 
 pub mod allocator;
 pub mod gdt;
+pub mod input;
 pub mod interrupts;
 pub mod memory;
 pub mod serial;
