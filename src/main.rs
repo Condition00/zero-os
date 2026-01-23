@@ -20,7 +20,7 @@ fn kernel_main(_boot_info: &'static BootInfo) -> ! {
 
     use zero::shell;
 
-    println!("ZERO OS\n");
+    println!("                                 ZERO OS\n");
     zero::init();
 
     let phys_mem_offset = VirtAddr::new(_boot_info.physical_memory_offset);
@@ -28,9 +28,10 @@ fn kernel_main(_boot_info: &'static BootInfo) -> ! {
     let mut frame_allocator = unsafe { BootInfoFrameAllocator::init(&_boot_info.memory_map) };
 
     allocator::init_heap(&mut mapper, &mut frame_allocator).expect("heap inititalization failed");
+    println!("heap allocator initialized...");
 
     zero::fs::init();
-    println!("All Operations initialized\n");
+    println!("ramfs initialized...\n");
 
     #[cfg(test)]
     test_main();
