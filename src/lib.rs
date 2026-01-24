@@ -5,20 +5,14 @@
 #![reexport_test_harness_main = "test_main"]
 #![feature(abi_x86_interrupt)]
 
+use crate::drivers::serial;
 use core::panic::PanicInfo;
 
-pub mod allocator;
 pub mod arch;
-pub mod fs;
-pub mod gdt;
-pub mod input;
-pub mod interrupts;
-pub mod memory;
-pub mod serial;
-pub mod shell;
-pub mod task;
-pub mod terminal;
-pub mod vg_buffer;
+pub mod drivers;
+pub mod kernel;
+pub mod ui;
+
 extern crate alloc;
 
 pub trait Testable {
@@ -68,10 +62,10 @@ pub fn exit_qemu(exit_code: QemuExitCode) {
 }
 
 pub fn init() {
-    gdt::init();
-    interrupts::init_idt();
+    arch::x86_64::gdt::init();
+    arch::x86_64::interrupts::init_idt();
     unsafe {
-        interrupts::PICS.lock().initialize();
+        arch::x86_64::interrupts::PICS.lock().initialize();
     }
     x86_64::instructions::interrupts::enable();
 }

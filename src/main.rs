@@ -8,20 +8,21 @@ extern crate alloc;
 
 use bootloader::{entry_point, BootInfo};
 use core::panic::PanicInfo;
+use zero::drivers::keyboard;
+use zero::kernel::memory::allocator;
+use zero::kernel::memory::memory;
+use zero::kernel::memory::memory::BootInfoFrameAllocator;
+use zero::kernel::task::{executor::Executor, Task};
 use zero::println;
-use zero::task::{executor::Executor, keyboard, Task};
+use zero::ui::shell;
 
 entry_point!(kernel_main);
 fn kernel_main(_boot_info: &'static BootInfo) -> ! {
     use x86_64::VirtAddr;
-    use zero::allocator;
-    use zero::memory;
-    use zero::memory::BootInfoFrameAllocator;
-
-    use zero::shell;
 
     println!("                                 ZERO OS\n");
-    zero::init();
+
+    zero::kernel::fs::init();
 
     let phys_mem_offset = VirtAddr::new(_boot_info.physical_memory_offset);
     let mut mapper = unsafe { memory::init(phys_mem_offset) };
