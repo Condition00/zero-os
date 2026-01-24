@@ -82,6 +82,14 @@ pub fn selectors() -> &'static Selectors {
     &GDT.1
 }
 
+pub fn user_code_selector() -> SegmentSelector {
+    selectors().user_code_selector
+}
+
+pub fn user_data_selector() -> SegmentSelector {
+    selectors().user_data_selector
+}
+
 //testing
 
 pub fn test_user_segments() {

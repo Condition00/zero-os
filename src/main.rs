@@ -39,25 +39,21 @@ fn kernel_main(_boot_info: &'static BootInfo) -> ! {
 
     //jumpin
     println!("[USERSPACE]: Jumping to Userspace...");
-    let entry = zero::kernel::userspace::get_user_function_addr();
-    let stack_top = zero::kernel::userspace::user_stack_top();
-    let stack_bottom = zero::kernel::userspace::user_stack_bottom();
+
+    let user_code: &[u8] = &[0xeb, 0xfe];
+
+    //loading user prograns into memory space:
+    let entry =
+        zero::kernel::userspace::load_user_program(user_code, &mut mapper, &mut frame_allocator)
+            .expect("failed to load user program");
+    //allocayin the user stack
+    let user_stack =
+        zero::kernel::userspace::allocate_user_stack(&mut mapper, &mut frame_allocator)
+            .expect("failed to allocate user stack");
+
     unsafe {
-        //mappin code page
-        zero::kernel::userspace::map_user_code_page(&mut mapper, &mut frame_allocator, entry)
-            .expect("failed to map user code page");
-
-        //mappin stack page
-        zero::kernel::userspace::map_user_stack_pages(
-            &mut mapper,
-            &mut frame_allocator,
-            stack_bottom,
-            4096 * 4,
-        )
-        .expect("failed to map user stack pages")
-    };
-
-    unsafe { zero::kernel::userspace::jump_to_userspace(entry, stack_top) }
+        zero::kernel::userspace::jump_to_userspace(entry, user_stack);
+    }
 
     let mut executor = Executor::new();
     executor.spawn(Task::new(keyboard::print_keypresses()));
