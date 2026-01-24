@@ -38,7 +38,7 @@ fn kernel_main(_boot_info: &'static BootInfo) -> ! {
     test_main();
 
     //jumpin
-    println!("Jumping to the userspace.....");
+    println!("[USERSPACE]: Jumping to Userspace...");
     let entry = zero::kernel::userspace::get_user_function_addr();
     let stack_top = zero::kernel::userspace::user_stack_top();
     unsafe { zero::kernel::userspace::jump_to_userspace(entry, stack_top) }
