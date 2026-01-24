@@ -12,7 +12,7 @@ lazy_static! {
         unsafe {
             idt.double_fault
                 .set_handler_fn(test_double_fault_handler)
-                .set_stack_index(zero::gdt::DOUBLE_FAULT_IST_INDEX);
+                .set_stack_index(zero::arch::x86_64::gdt::DOUBLE_FAULT_IST_INDEX);
         }
 
         idt
@@ -27,7 +27,7 @@ use zero::serial_print;
 pub extern "C" fn _start() -> ! {
     serial_print!("stack_overflow::stack_overflow...\t");
 
-    zero::gdt::init();
+    zero::arch::x86_64::gdt::init();
     init_test_idt();
 
     stack_overflow();

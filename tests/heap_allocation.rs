@@ -10,14 +10,15 @@ use alloc::boxed::Box;
 use alloc::vec::Vec;
 use bootloader::{entry_point, BootInfo};
 use core::panic::PanicInfo;
-use zero::allocator::HEAP_SIZE;
+use zero::kernel::memory::allocator::HEAP_SIZE;
 
 entry_point!(main);
 
 fn main(_boot_info: &'static BootInfo) -> ! {
     use x86_64::VirtAddr;
-    use zero::allocator;
-    use zero::memory::{self, BootInfoFrameAllocator};
+    use zero::kernel::memory::allocator;
+    use zero::kernel::memory::memory;
+    use zero::kernel::memory::memory::BootInfoFrameAllocator;
 
     zero::init();
     let phys_mem_offset = VirtAddr::new(_boot_info.physical_memory_offset);
