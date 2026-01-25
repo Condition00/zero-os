@@ -63,6 +63,7 @@ pub fn exit_qemu(exit_code: QemuExitCode) {
 pub fn init() {
     arch::x86_64::gdt::init();
     arch::x86_64::interrupts::init_idt();
+    arch::x86_64::syscall::init();
     unsafe {
         arch::x86_64::interrupts::PICS.lock().initialize();
     }
