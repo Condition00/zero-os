@@ -170,7 +170,10 @@ fn sys_write(fd: u64, buffer_ptr: u64, length: u64) -> u64 {
 
 fn sys_exit(exit_code: u64) -> u64 {
     crate::println!("[SYSCALL] User program exited with code: {}", exit_code);
-    //halting the process for now we will exit the program later
+    // For now, we can't properly return to kernel from userspace
+    // The best we can do is halt the process
+    // TODO: Implement proper process termination and return to kernel
+    crate::println!("[SYSCALL] Halting - will implement proper process exit later");
     crate::hlt_loop();
 }
 

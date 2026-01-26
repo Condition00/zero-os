@@ -37,36 +37,40 @@ fn kernel_main(_boot_info: &'static BootInfo) -> ! {
     #[cfg(test)]
     test_main();
 
-    //jumpin
-    println!("[USERSPACE]: Jumping to Userspace...");
+    // Optional userspace test - comment out to skip straight to shell
+    {
+        println!("[USERSPACE]: Jumping to Userspace test...");
 
-    let user_code: &[u8] = &[
-        0x48, 0xc7, 0xc0, 0x00, 0x00, 0x00, 0x00, // mov rax, 0 (sys_write)
-        0x48, 0xc7, 0xc7, 0x01, 0x00, 0x00, 0x00, // mov rdi, 1 (stdout)
-        0x48, 0x8d, 0x35, 0x19, 0x00, 0x00,
-        0x00, // lea rsi, [rip+25] (message address) ← FIXED
-        0x48, 0xc7, 0xc2, 0x0f, 0x00, 0x00, 0x00, // mov rdx, 15 (length) ← FIXED
-        0x0f, 0x05, // syscall
-        // Exit with code 42
-        0x48, 0xc7, 0xc0, 0x01, 0x00, 0x00, 0x00, // mov rax, 1 (sys_exit)
-        0x48, 0xc7, 0xc7, 0x2a, 0x00, 0x00, 0x00, // mov rdi, 42 (exit code)
-        0x0f, 0x05, // syscall
-        // Message data: "Hello from R3!\n"
-        0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x20, 0x66, 0x72, // "Hello fr"
-        0x6f, 0x6d, 0x20, 0x52, 0x33, 0x21, 0x0a, // "om R3!\n"
-    ];
+        let user_code: &[u8] = &[
+            0x48, 0xc7, 0xc0, 0x01, 0x00, 0x00, 0x00, // mov rax, 1 (SYS_WRITE)
+            0x48, 0xc7, 0xc7, 0x01, 0x00, 0x00, 0x00, // mov rdi, 1 (stdout)
+            0x48, 0x8d, 0x35, 0x19, 0x00, 0x00, 0x00, // lea rsi, [rip+25]
+            0x48, 0xc7, 0xc2, 0x0f, 0x00, 0x00, 0x00, // mov rdx, 15
+            0x0f, 0x05, // syscall
+            // Exit with code 42
+            0x48, 0xc7, 0xc0, 0x0b, 0x00, 0x00, 0x00, // mov rax, 11 (SYS_EXIT)
+            0x48, 0xc7, 0xc7, 0x2a, 0x00, 0x00, 0x00, // mov rdi, 42
+            0x0f, 0x05, // syscall
+            // Message data: "Hello from R3!\n"
+            0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x20, 0x66, 0x72, // "Hello fr"
+            0x6f, 0x6d, 0x20, 0x52, 0x33, 0x21, 0x0a, // "om R3!\n"
+        ];
 
-    //loading user prograns into memory space:
-    let entry =
-        zero::kernel::userspace::load_user_program(user_code, &mut mapper, &mut frame_allocator)
-            .expect("failed to load user program");
-    //allocayin the user stack
-    let user_stack =
-        zero::kernel::userspace::allocate_user_stack(&mut mapper, &mut frame_allocator)
-            .expect("failed to allocate user stack");
+        //loading user program into memory space:
+        let entry = zero::kernel::userspace::load_user_program(
+            user_code,
+            &mut mapper,
+            &mut frame_allocator,
+        )
+        .expect("failed to load user program");
+        //allocating the user stack
+        let user_stack =
+            zero::kernel::userspace::allocate_user_stack(&mut mapper, &mut frame_allocator)
+                .expect("failed to allocate user stack");
 
-    unsafe {
-        zero::kernel::userspace::jump_to_userspace(entry, user_stack);
+        unsafe {
+            zero::kernel::userspace::jump_to_userspace(entry, user_stack);
+        }
     }
 
     let mut executor = Executor::new();
