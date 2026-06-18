@@ -20,7 +20,7 @@ entry_point!(kernel_main);
 fn kernel_main(_boot_info: &'static BootInfo) -> ! {
     use x86_64::VirtAddr;
 
-    println!("                                    VITAP OS\n");
+    println!("                                    ZERO OS\n");
     zero::init();
     // zero::arch::x86_64::gdt::test_user_segments();
 

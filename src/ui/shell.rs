@@ -8,7 +8,7 @@ use alloc::vec::Vec;
 
 pub async fn shell() {
     loop {
-        terminal::write("kernel@vitap-os:-# ");
+        terminal::write("kernel@zero-os:-# ");
         terminal::mark_input_start();
 
         let line = input::read_line().await;
