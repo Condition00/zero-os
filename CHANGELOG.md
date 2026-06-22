@@ -75,3 +75,12 @@
 * Added PS/2 mouse support to the kernel.
 * test
 
+
+## Process refactor
+
+* Process now owns a saved Context instead of separate entry/stack fields, and there is a global PROCESS_TABLE ready for later scheduling work. The userspace runner was updated to read rip and rsp from the new context shape.
+
+* context.rs: holds the saved register state.
+* process.rs: now stores pid, context, and state.
+* mod.rs: exposes PROCESS_TABLE and add_process(...).
+* runner.rs: now launches from process.context.
