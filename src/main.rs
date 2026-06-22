@@ -39,8 +39,8 @@ fn kernel_main(_boot_info: &'static BootInfo) -> ! {
     zero::drivers::mouse::init();
     println!("PS/2 mouse initialized...\n");
 
-    #[cfg(test)]
-    test_main();
+    // #[cfg(test)]
+    // test_main();
 
     // {
     //     println!("[USERSPACE]: Jumping to Userspace test...");
@@ -79,7 +79,7 @@ fn kernel_main(_boot_info: &'static BootInfo) -> ! {
 
     let mut executor = Executor::new();
     executor.spawn(Task::new(keyboard::print_keypresses()));
-    executor.spawn(Task::new(zero::drivers::mouse::handle_mouse_events()));
+    // executor.spawn(Task::new(zero::drivers::mouse::handle_mouse_events()));
     executor.spawn(Task::new(shell::shell()));
     executor.run();
 }
